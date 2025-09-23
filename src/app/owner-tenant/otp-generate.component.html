@@ -1,0 +1,64 @@
+<!-- <div class="otp-generate-container">
+  <h2>Generate OTP - Royal Crown Apartment</h2>
+  <form [formGroup]="otpForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-group">
+      <label for="guestType">Guest Type</label>
+      <select id="guestType" formControlName="guestType" required>
+        <option value="" disabled>Select guest type</option>
+        <option *ngFor="let type of guestTypes" [value]="type">{{ type }}</option>
+      </select>
+      <div class="error" *ngIf="otpForm.get('guestType')?.invalid && otpForm.get('guestType')?.touched">
+        Guest type is required.
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="loading || otpForm.invalid">Generate OTP</button>
+  </form>
+
+  <div class="otp-result" *ngIf="generatedOtp">
+    <p><strong>Generated OTP:</strong> {{ generatedOtp }}</p>
+    <p><strong>Expires At:</strong> {{ expiresAt | date: 'short' }}</p>
+  </div>
+
+  <div class="error-message" *ngIf="error">{{ error }}</div>
+</div> -->
+<div class="page owner-page">
+  <section class="panel">
+    <h2>Generate Visitor OTP</h2>
+    <p class="muted">Flat: <strong>{{ profile?.flatNo || '—' }}</strong> | User: <strong>{{ profile?.username || '-' }}</strong></p>
+
+    <form [formGroup]="form" (ngSubmit)="generate()">
+      <label>Guest Type
+        <select formControlName="guestType">
+          <option value="VISITOR">Visitor</option>
+          <option value="DELIVERY">Delivery</option>
+          <option value="MAINTENANCE">Maintenance</option>
+        </select>
+      </label>
+      <div class="actions">
+        <button type="submit" [disabled]="generating">Generate OTP</button>
+      </div>
+    </form>
+
+    <div *ngIf="lastOtp" class="otp-card">
+      <div class="code">{{ lastOtp.otpCode }}</div>
+      <div class="meta">Expires at: {{ lastOtp.expiresAt || lastOtp.expiresAt }}</div>
+      <div class="controls">
+        <button (click)="copyCode()">Copy</button>
+      </div>
+    </div>
+
+    <div *ngIf="message" class="info">{{ message }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </section>
+
+  <section class="panel">
+    <h3>Account</h3>
+    <div *ngIf="profile">
+      <div><strong>{{ profile.username }}</strong> — {{ profile.role }}</div>
+      <div>Flat: {{ profile.flatNo }}</div>
+      <small class="muted">Change password via the form below.</small>
+      <change-password [profile]="profile"></change-password>
+    </div>
+  </section>
+</div>

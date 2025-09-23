@@ -1,0 +1,55 @@
+// .header {
+//   background-color: #003366;
+//   color: white;
+//   padding: 1rem 2rem;
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+
+//   .app-name {
+//     margin: 0;
+//     font-weight: 700;
+//     font-size: 1.5rem;
+//   }
+
+//   nav {
+//     a {
+//       color: white;
+//       margin-right: 1rem;
+//       text-decoration: none;
+//       font-weight: 600;
+//       transition: color 0.3s ease;
+
+//       &:hover {
+//         color: #ffcc00;
+//       }
+//     }
+
+//     .btn-logout {
+//       background: none;
+//       border: 1px solid white;
+//       color: white;
+//       padding: 0.3rem 0.6rem;
+//       cursor: pointer;
+//       font-weight: 600;
+//       border-radius: 3px;
+
+//       &:hover {
+//         background-color: #ffcc00;
+//         color: #003366;
+//       }
+//     }
+//   }
+// }
+.rc-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 20px; background: white; border-bottom: 1px solid #eef2f7;
+  box-shadow: 0 1px 0 rgba(16,24,40,0.02);
+}
+.brand { font-weight:700; color:#1f3a8a; cursor:pointer; }
+nav { display:flex; gap:12px; align-items:center; }
+nav a { color:#334155; text-decoration:none; padding:6px 10px; border-radius:8px; }
+nav a:hover { background:#f1f5f9; }
+.user { display:flex; gap:8px; align-items:center; }
+.uname { font-weight:600; color:#0f172a; }
+button { border: none; background: #ef4444; color: white; padding:6px 10px; border-radius:8px; cursor:pointer; }
