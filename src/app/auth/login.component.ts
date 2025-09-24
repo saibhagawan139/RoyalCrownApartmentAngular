@@ -1,85 +1,44 @@
-// import { Component } from '@angular/core';
-// import {
-//   FormBuilder,
-//   FormGroup,
-//   ReactiveFormsModule,
-//   Validators
-// } from '@angular/forms';import { Router } from '@angular/router';
-// import { AuthService } from './auth.service';
-// import { CommonModule } from '@angular/common';
-
-// @Component({
-//   selector: 'app-login',
-//   standalone: true,
-//   imports: [ReactiveFormsModule, CommonModule],
-//   templateUrl: './login.component.html',
-//   styleUrls: ['./login.component.scss'],
-// })
-// export class LoginComponent {
-//   loginForm: FormGroup;
-//   loading = false;
-//   error: string | null = null;
-
-//   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
-//     this.loginForm = this.fb.group({
-//       username: ['', [Validators.required]],
-//       password: ['', [Validators.required]],
-//     });
-//   }
-
-//   onSubmit(): void {
-//     this.error = null;
-//     if (this.loginForm.invalid) return;
-
-//     this.loading = true;
-//     const { username, password } = this.loginForm.value;
-
-//     this.authService.login(username!, password!).subscribe({
-//       next: () => {
-//         this.loading = false;
-//         const role = this.authService.getUserRole();
-//         if (role === 'OWNER' || role === 'TENANT') {
-//           this.router.navigate(['/owner-tenant/otp-generate']);
-//         } else if (role === 'SECURITY_GUARD') {
-//           this.router.navigate(['/security-guard/otp-validate']);
-//         } else {
-//           this.authService.logout();
-//           this.error = 'Unauthorized role';
-//         }
-//       },
-//       error: (err) => {
-//         this.loading = false;
-//         this.error = err.error?.error || 'Login failed';
-//       },
-//     });
-//   }
-// }
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true,  // 👈 IMPORTANT
-  imports: [CommonModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
-  form!: FormGroup;
+export class LoginComponent {
+  username = '';
+  password = '';
+  errorMessage = '';
+  loading = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
-  ngOnInit(): void {
-    this.form = this.fb.group({
-      username: this.fb.control<string>('', Validators.required),
-      password: this.fb.control<string>('', Validators.required),
+  onSubmit() {
+    this.errorMessage = '';
+    this.loading = true;
+    this.auth.login(this.username, this.password).subscribe({
+      next: () => {
+        this.loading = false;
+        // Navigate based on role
+        if (this.auth.hasRole('OWNER') || this.auth.hasRole('TENANT')) {
+          this.router.navigate(['/owner-tenant']);
+        } else if (this.auth.hasRole('SECURITY_GUARD')) {
+          this.router.navigate(['/security-guard']);
+        } else {
+          this.errorMessage = 'Unauthorized role';
+          this.auth.logout();
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = err.error?.error || 'Login failed. Check credentials.';
+      }
     });
-  }
-
-  onSubmit(): void {
-    if (this.form.valid) {
-      console.log(this.form.value);
-    }
   }
 }

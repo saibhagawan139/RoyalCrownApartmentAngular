@@ -1,82 +1,46 @@
-// import { Component } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import {
-//   FormBuilder,
-//   FormGroup,
-//   ReactiveFormsModule,
-//   Validators,
-// } from '@angular/forms';
-// import { ApartmentService } from '../shared/apartment.service';
-
-// @Component({
-//   selector: 'app-otp-validate',
-//   standalone: true,
-//   imports: [CommonModule, ReactiveFormsModule],
-//   templateUrl: './otp-validate.component.html',
-//   styleUrls: ['./otp-validate.component.scss'],
-// })
-// export class OtpValidateComponent {
-//   otpValidateForm: FormGroup;
-//   validationResult: boolean | null = null;
-//   error: string | null = null;
-//   loading = false;
-
-//   constructor(private fb: FormBuilder, private apartmentService: ApartmentService) {
-//     this.otpValidateForm = this.fb.group({
-//       flatNo: ['', [Validators.required]],
-//       otpCode: ['', [Validators.required]],
-//     });
-//   }
-
-//   onSubmit(): void {
-//     this.error = null;
-//     this.validationResult = null;
-
-//     if (this.otpValidateForm.invalid) {
-//       return;
-//     }
-
-//     this.loading = true;
-//     const flatNo: string = this.otpValidateForm.value.flatNo;
-//     const otpCode: string = this.otpValidateForm.value.otpCode;
-
-//     this.apartmentService.validateOtp(flatNo, otpCode).subscribe({
-//       next: (response) => {
-//         this.loading = false;
-//         this.validationResult = response.valid;
-//       },
-//       error: (err: any) => {
-//         this.loading = false;
-//         this.error = err.error?.error || 'Failed to validate OTP';
-//       },
-//     });
-//   }
-// }
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../app.config';
 
 @Component({
   selector: 'app-otp-validate',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './otp-validate.component.html',
-  styleUrls: ['./otp-validate.component.css']
+  styleUrls: ['./otp-validate.component.scss']
 })
-export class OtpValidateComponent implements OnInit {
-  form!: FormGroup;
+export class OtpValidateComponent {
+  flatNo = '';
+  otpCode = '';
+  resultMessage = '';
+  errorMessage = '';
+  loading = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private http: HttpClient) {}
 
-  ngOnInit(): void {
-    this.form = this.fb.group({
-      otp: this.fb.control<string>('', [Validators.required, Validators.minLength(6)]),
-    });
-  }
-
-  onValidate(): void {
-    if (this.form.valid) {
-      console.log('Validating OTP', this.form.value.otp);
+  validateOtp() {
+    this.errorMessage = '';
+    this.resultMessage = '';
+    if (!this.flatNo || !this.otpCode) {
+      this.errorMessage = 'Flat number and OTP code are required.';
+      return;
     }
+    this.loading = true;
+    this.http.post<{ valid: boolean }>(`${environment.apiUrl}/otp/validate`, { flatNo: this.flatNo, otpCode: this.otpCode }).subscribe({
+      next: res => {
+        this.loading = false;
+        if (res.valid) {
+          this.resultMessage = 'OTP validated successfully.';
+        } else {
+          this.errorMessage = 'OTP validation failed.';
+        }
+      },
+      error: err => {
+        this.loading = false;
+        this.errorMessage = err.error?.error || 'OTP validation error.';
+      }
+    });
   }
 }
