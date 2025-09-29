@@ -1,0 +1,22 @@
+<div class="flat-management-container">
+  <h2>Flat Management</h2>
+  <div *ngIf="loading" class="loading">Loading flats...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <table *ngIf="flats.length" class="flat-table">
+    <thead>
+      <tr><th>Flat No</th><th>President</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let flat of flats">
+        <td>{{ flat.flatNo }}</td>
+        <td>{{ flat.president ? 'Yes' : 'No' }}</td>
+        <td>
+          <button (click)="togglePresident(flat)">
+            {{ flat.president ? 'Remove President' : 'Make President' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!loading && !flats.length">No flats found.</div>
+</div>

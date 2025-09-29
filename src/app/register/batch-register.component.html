@@ -1,0 +1,22 @@
+<div class="batch-register-container">
+  <h2>Batch Register Users</h2>
+
+  <p>You can upload a JSON file or paste JSON array of user objects:</p>
+
+  <input type="file" accept=".json" (change)="onFileSelected($event)" />
+
+  <textarea
+    [(ngModel)]="usersJson"
+    rows="15"
+    placeholder='Paste JSON like [{"username":"user1","name":"Name1","password":"pass","role":"OWNER","flatNo":"101"}, ...]'
+  ></textarea>
+
+  <div class="buttons">
+    <button (click)="validateJson()" [disabled]="loading || !usersJson.trim()">Validate JSON</button>
+    <button (click)="submit()" [disabled]="loading || !parsedUsers">Submit Batch Registration</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Processing registration...</div>
+  <div *ngIf="message" class="message">{{ message }}</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+</div>

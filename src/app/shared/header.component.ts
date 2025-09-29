@@ -1,47 +1,58 @@
-// import { Component } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { RouterModule, Router } from '@angular/router';
-// import { AuthService } from '../auth/auth.service';
-
-// @Component({
-//   selector: 'app-header',
-//   standalone: true,
-//   imports: [CommonModule, RouterModule],
-//   templateUrl: './header.component.html',
-//   styleUrls: ['./header.component.scss'],
-// })
-// export class HeaderComponent {
-//   appName = 'Royal Crown Apartment';
-//   userRole: string | null = null;
-
-//   constructor(private authService: AuthService, private router: Router) {
-//     this.authService.currentUserRole$.subscribe((role) => {
-//       this.userRole = role;
-//     });
-//   }
-
-//   logout(): void {
-//     this.authService.logout();
-//     this.router.navigate(['/login']);
-//   }
-// }
 import { Component } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'rc-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  selector: 'app-header',
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
+  template: `
+    <header class="header">
+      <div class="logo">Royal Crown Apartment</div>
+      <nav *ngIf="auth.isLoggedIn()">
+        <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:true}">Home</a>
+        <a (click)="logout()" class="logout-link">Logout</a>
+      </nav>
+      <nav *ngIf="!auth.isLoggedIn()">
+        <a routerLink="/login">Login</a>
+      </nav>
+    </header>
+  `,
+  styles: [`
+    .header {
+      display: flex;
+      justify-content: space-between;
+      background-color: #3f51b5;
+      color: white;
+      padding: 12px 24px;
+      align-items: center;
+      font-weight: 700;
+    }
+    .logo {
+      font-size: 1.5em;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    nav a {
+      margin-left: 15px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    nav a.active-link {
+      text-decoration: underline;
+    }
+    .logout-link:hover {
+      text-decoration: underline;
+    }
+  `]
 })
 export class HeaderComponent {
-  user: { username: string; role: string } | null = null;
-
-  constructor(private auth: AuthService, private router: Router) {
-    this.auth.currentUser().subscribe(u => this.user = u);
-  }
+  constructor(public auth: AuthService, private router: Router) {}
 
   logout() {
     this.auth.logout();
+    this.router.navigate(['/login']);
   }
 }

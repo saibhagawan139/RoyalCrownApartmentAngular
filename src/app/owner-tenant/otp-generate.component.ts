@@ -1,89 +1,94 @@
-// import { Component } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import {
-//   FormBuilder,
-//   FormGroup,
-//   ReactiveFormsModule,
-//   Validators,
-// } from '@angular/forms';
-// import { ApartmentService } from '../shared/apartment.service';
 
-// interface OtpResponse {
-//   otpCode: string;
-//   expiresAt: string;
-// }
-
-// @Component({
-//   selector: 'app-otp-generate',
-//   standalone: true,
-//   imports: [CommonModule, ReactiveFormsModule],
-//   templateUrl: './otp-generate.component.html',
-//   styleUrls: ['./otp-generate.component.scss'],
-// })
-// export class OtpGenerateComponent {
-//   otpForm: FormGroup;
-//   generatedOtp: string | null = null;
-//   expiresAt: string | null = null;
-//   error: string | null = null;
-//   loading = false;
-
-//   guestTypes = ['VISITOR', 'DELIVERY', 'SERVICE', 'OTHER'];
-
-//   constructor(private fb: FormBuilder, private apartmentService: ApartmentService) {
-//     this.otpForm = this.fb.group({
-//       guestType: ['', [Validators.required]],
-//     });
-//   }
-
-//   onSubmit(): void {
-//     this.error = null;
-//     this.generatedOtp = null;
-//     this.expiresAt = null;
-
-//     if (this.otpForm.invalid) {
-//       return;
-//     }
-
-//     this.loading = true;
-//     const guestType: string = this.otpForm.value.guestType;
-//     this.apartmentService.generateOtp(guestType).subscribe({
-//       next: (response: OtpResponse) => {
-//         this.loading = false;
-//         this.generatedOtp = response.otpCode;
-//         this.expiresAt = response.expiresAt;
-//       },
-//       error: (err: any) => {
-//         this.loading = false;
-//         this.error = err.error?.error || 'Failed to generate OTP';
-//       },
-//     });
-//   }
-// }
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../auth/auth.service';
+import { environment } from '../app.config';
+
+interface User {
+  username: string;
+  flatNo: string;
+  role: string;
+}
+
+interface OtpEntry {
+  flatNo: string;
+  guestType: string;
+  otpCode: string;
+  issuedAt: string;
+  expiresAt: string;
+  valid: boolean;
+}
 
 @Component({
   selector: 'app-otp-generate',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './otp-generate.component.html',
-  styleUrls: ['./otp-generate.component.css']
+  styleUrls: ['./otp-generate.component.scss']
 })
 export class OtpGenerateComponent implements OnInit {
-  form!: FormGroup;
+  guestType = '';
+  otpEntry: OtpEntry | null = null;
+  error: string | null = null;
+  loading = false;
+  username = '';
+  flatNo = '';
 
-  constructor(private fb: FormBuilder) {}
+  guestTypes = ['VISITOR', 'SERVANT', 'DELIVERY', 'OTHER'];
 
-  ngOnInit(): void {
-    this.form = this.fb.group({
-      emailOrPhone: this.fb.control<string>('', Validators.required),
+  constructor(
+    private http: HttpClient,
+    private auth: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+  this.username = this.auth.getUsername() || '';
+  if (this.username) {
+    this.auth.loadUserProfile().subscribe({
+      next: (user) => {
+        this.flatNo = user.flatNo || '';
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.error = 'Failed to fetch user flat information.';
+        this.cdr.detectChanges();
+      }
     });
+  } else {
+    this.error = 'User not logged in.';
   }
+}
 
-  onGenerate(): void {
-    if (this.form.valid) {
-      console.log('OTP generated for', this.form.value.emailOrPhone);
+  generateOtp() {
+    this.error = null;
+    this.otpEntry = null;
+
+    if (!this.guestType) {
+      this.error = 'Please select guest type.';
+      return;
     }
+
+    if (!this.flatNo) {
+      this.error = 'Flat number not found.';
+      return;
+    }
+
+    this.loading = true;
+
+    this.http.post<OtpEntry>(`${environment.apiUrl}/otp/generate`, { guestType: this.guestType, flatNo: this.flatNo }).subscribe({
+      next: (res) => {
+        this.otpEntry = res;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.error = err.error?.error || 'Failed to generate OTP.';
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

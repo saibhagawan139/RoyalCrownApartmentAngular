@@ -1,0 +1,57 @@
+<div class="visit-log-container">
+  <h2>Visit Logs</h2>
+
+  <form (submit)="loadVisits()" class="filters">
+    <label>
+      From Date:
+      <input type="date" [(ngModel)]="fromDate" name="fromDate" />
+    </label>
+    <label>
+      To Date:
+      <input type="date" [(ngModel)]="toDate" name="toDate" />
+    </label>
+    <button type="submit">Filter</button>
+  </form>
+
+  <button (click)="deleteSelectedVisits()" [disabled]="selectedVisits.size === 0">
+    Delete Selected Visits
+  </button>
+
+  <div *ngIf="loading" class="loading">Loading visit logs...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <table *ngIf="visits.length" class="visit-table">
+    <thead>
+      <tr>
+        <th><input type="checkbox" (change)="toggleSelectAll($event.target.checked)" /></th>
+        <th>Visit Time</th>
+        <th>Flat No</th>
+        <th>Owner</th>
+        <th>Visitor Type</th>
+        <th>Security Guard</th>
+        <th>OTP Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let v of visits">
+        <td>
+          <input
+            type="checkbox"
+            [checked]="selectedVisits.has(v.otpCode)"
+            (change)="toggleVisitSelection(v.otpCode, $event.target.checked)"
+          />
+        </td>
+        <td>{{ v.visitTime | date: 'medium' }}</td>
+        <td>{{ v.flatNo }}</td>
+        <td>{{ v.ownerUsername }}</td>
+        <td>{{ v.visitorType }}</td>
+        <td>{{ v.securityGuardUsername }}</td>
+        <td>{{ v.otpCode }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !visits.length" class="no-data">
+    No visit logs found for selected filters.
+  </div>
+</div>

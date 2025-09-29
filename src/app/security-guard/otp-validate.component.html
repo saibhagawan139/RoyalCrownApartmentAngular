@@ -1,53 +1,15 @@
-<!-- <div class="otp-validate-container">
-  <h2>Validate OTP - Royal Crown Apartment</h2>
-  <form [formGroup]="otpValidateForm" (ngSubmit)="onSubmit()" novalidate>
-    <div class="form-group">
-      <label for="flatNo">Flat Number</label>
-      <input id="flatNo" formControlName="flatNo" type="text" autocomplete="off" required />
-      <div class="error" *ngIf="otpValidateForm.get('flatNo')?.invalid && otpValidateForm.get('flatNo')?.touched">
-        Flat number is required.
-      </div>
-    </div>
+<div class="otp-validate-container">
+  <h2>Validate OTP</h2>
 
-    <div class="form-group">
-      <label for="otpCode">OTP Code</label>
-      <input id="otpCode" formControlName="otpCode" type="text" autocomplete="off" required />
-      <div class="error" *ngIf="otpValidateForm.get('otpCode')?.invalid && otpValidateForm.get('otpCode')?.touched">
-        OTP code is required.
-      </div>
-    </div>
+  <label for="flatNo">Flat Number</label>
+  <input id="flatNo" [(ngModel)]="flatNo" placeholder="Enter Flat Number" />
 
-    <button type="submit" [disabled]="loading || otpValidateForm.invalid">Validate OTP</button>
-  </form>
+  <label for="otpCode">OTP Code</label>
+  <input id="otpCode" [(ngModel)]="otpCode" placeholder="Enter OTP Code" />
 
-  <div *ngIf="validationResult !== null" class="validation-result" [class.success]="validationResult" [class.failure]="!validationResult">
-    <p *ngIf="validationResult">OTP is valid ✔️</p>
-    <p *ngIf="!validationResult">Invalid or expired OTP ❌</p>
-  </div>
+  <button (click)="validateOtp()" [disabled]="loading">Validate OTP</button>
 
-  <div class="error-message" *ngIf="error">{{ error }}</div>
-</div> -->
-<div class="page validate-page">
-  <div class="panel">
-    <h2>Validate OTP</h2>
-    <form [formGroup]="form" (ngSubmit)="validate()">
-      <label>Flat No
-        <input formControlName="flatNo" placeholder="E.g. A101 or SE1"/>
-      </label>
-      <label>OTP Code
-        <input formControlName="otpCode" placeholder="Enter OTP"/>
-      </label>
-      <div class="actions">
-        <button type="submit" [disabled]="validating">Validate</button>
-      </div>
-    </form>
-
-    <div *ngIf="result" class="result" [class.valid]="result.valid" [class.invalid]="!result.valid">
-      <div *ngIf="result.valid">✅ Valid OTP</div>
-      <div *ngIf="!result.valid">❌ Invalid OTP</div>
-      <div *ngIf="result.message">{{ result.message }}</div>
-    </div>
-
-    <div *ngIf="error" class="error">{{ error }}</div>
-  </div>
+  <div *ngIf="loading" class="loading">Validating...</div>
+  <div *ngIf="resultMessage" class="result">{{ resultMessage }}</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 </div>
