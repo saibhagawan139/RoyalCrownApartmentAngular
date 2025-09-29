@@ -22,14 +22,26 @@ export class LoginComponent {
   onSubmit() {
     this.errorMessage = '';
     this.loading = true;
+
     this.auth.login(this.username, this.password).subscribe({
       next: () => {
         this.loading = false;
+        // Debug log to see roles detected
+        console.log('Roles after login:', {
+          OWNER: this.auth.hasRole('OWNER'),
+          TENANT: this.auth.hasRole('TENANT'),
+          SECURITY_GUARD: this.auth.hasRole('SECURITY_GUARD'),
+          PRESIDENT: this.auth.hasRole('PRESIDENT'),
+          ADMIN: this.auth.hasRole('ADMIN'),
+        });
         // Navigate based on role
         if (this.auth.hasRole('OWNER') || this.auth.hasRole('TENANT')) {
           this.router.navigate(['/owner-tenant']);
         } else if (this.auth.hasRole('SECURITY_GUARD')) {
           this.router.navigate(['/security-guard']);
+        } else if (this.auth.hasRole('PRESIDENT') || this.auth.hasRole('ADMIN')) {
+          // Added navigation for PRESIDENT and ADMIN roles to admin dashboard or appropriate page
+          this.router.navigate(['/admin-dashboard']);
         } else {
           this.errorMessage = 'Unauthorized role';
           this.auth.logout();

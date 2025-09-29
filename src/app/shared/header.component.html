@@ -1,16 +1,4 @@
-<!-- <header class="header">
-  <div class="container">
-    <h1 class="app-name">{{ appName }}</h1>
-    <nav>
-      <a routerLink="/" *ngIf="!userRole">Home</a>
-      <a routerLink="/login" *ngIf="!userRole">Login</a>
 
-      <a routerLink="/owner-tenant/otp-generate" *ngIf="userRole === 'OWNER' || userRole === 'TENANT'">Generate OTP</a>
-      <a routerLink="/security-guard/otp-validate" *ngIf="userRole === 'SECURITY_GUARD'">Validate OTP</a>
-      <button (click)="logout()" *ngIf="userRole" class="btn-logout">Logout</button>
-    </nav>
-  </div>
-</header> -->
 <header class="rc-header">
   <div class="brand" (click)="router.navigate(['/'])">Royal Crown Apartment</div>
   <nav>

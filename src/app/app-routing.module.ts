@@ -19,6 +19,30 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['SECURITY_GUARD'] }
   },
+  {
+    path: 'admin-dashboard',
+    loadComponent: () => import('./admin/admin-dashboard.component').then(m => m.AdminDashboardComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['PRESIDENT', 'ADMIN'] }
+  },
+  {
+    path: 'admin/flats',
+    loadComponent: () => import('./admin/flat-management.component').then(m => m.FlatManagementComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['PRESIDENT', 'ADMIN'] }
+  },
+  {
+      path: 'admin/visits',
+      loadComponent: () => import('./admin/visit-log.component').then(m => m.VisitLogComponent),
+      canActivate: [AuthGuard],
+      data: { roles: ['PRESIDENT', 'ADMIN'] }
+    },
+  {
+    path: 'admin/users',
+    loadComponent: () => import('./admin/user-management.component').then(m => m.UserManagementComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['PRESIDENT', 'ADMIN'] }
+  },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
 ];

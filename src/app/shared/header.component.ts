@@ -12,8 +12,6 @@ import { AuthService } from '../auth/auth.service';
       <div class="logo">Royal Crown Apartment</div>
       <nav *ngIf="auth.isLoggedIn()">
         <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:true}">Home</a>
-        <a *ngIf="auth.hasRole('OWNER') || auth.hasRole('TENANT')" routerLink="/owner-tenant" routerLinkActive="active-link">Generate OTP</a>
-        <a *ngIf="auth.hasRole('SECURITY_GUARD')" routerLink="/security-guard" routerLinkActive="active-link">Validate OTP</a>
         <a (click)="logout()" class="logout-link">Logout</a>
       </nav>
       <nav *ngIf="!auth.isLoggedIn()">

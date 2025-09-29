@@ -1,0 +1,30 @@
+<div class="user-management-container">
+  <h2>User Management</h2>
+  <div class="filter">
+    <label>Filter by Flat No:</label>
+    <input [(ngModel)]="flatNoFilter" (ngModelChange)="loadUsers()" placeholder="Flat No" />
+  </div>
+  <div *ngIf="loading" class="loading">Loading users...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <table *ngIf="users.length" class="user-table">
+    <thead>
+      <tr><th>Username</th><th>Name</th><th>Role</th><th>Flat No</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.username }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ user.flatNo }}</td>
+        <td>{{ user.active ? 'Active' : 'Inactive' }}</td>
+        <td>
+          <button (click)="toggleActive(user)">
+            {{ user.active ? 'Deactivate' : 'Activate' }}
+          </button>
+          <button (click)="deleteUser(user.username)" class="delete-btn">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!loading && !users.length">No users found.</div>
+</div>
