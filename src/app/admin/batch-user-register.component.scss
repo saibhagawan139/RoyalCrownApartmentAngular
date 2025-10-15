@@ -1,0 +1,83 @@
+.batch-register-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #f7f9fc;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(100,120,140,0.08);
+
+  h2 {
+    margin-bottom: 1.2rem;
+    color: #28527a;
+    text-align: center;
+  }
+
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+
+    th, td {
+      border: 1px solid #dae3ee;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background: #e3edf7;
+    }
+
+    td input[type="checkbox"] {
+      width: auto;
+    }
+  }
+
+  .actions {
+    margin: 1rem 0;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+
+    button {
+      padding: 0.4rem 1rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: none;
+      background: #28527a;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #183153;
+      }
+      &:disabled {
+        background: #a3bcd7;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .remove-btn {
+    color: #d84242;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .error {
+    color: #d84242;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    text-align: right;
+  }
+
+  .success {
+    color: #309940;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    text-align: right;
+  }
+}

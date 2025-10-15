@@ -11,8 +11,9 @@ interface OtpResponse {
   providedIn: 'root',
 })
 export class ApartmentService {
-  private apiUrl = 'http://localhost:8080'; // Replace with your backend URL if different
+  // private apiUrl = 'http://localhost:8080'; // Replace with your backend URL if different
 
+  private apiUrl = 'http://royalcrown.ap-south-1.elasticbeanstalk.com'; 
   constructor(private http: HttpClient) {}
 
   generateOtp(guestType: string): Observable<OtpResponse> {

@@ -43,6 +43,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['PRESIDENT', 'ADMIN'] }
   },
+   {
+    path: 'admin/batch-register',
+    loadComponent: () => import('./admin/batch-user-register.component').then(m => m.BatchUserRegisterComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['PRESIDENT', 'ADMIN'] }
+  },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
 ];

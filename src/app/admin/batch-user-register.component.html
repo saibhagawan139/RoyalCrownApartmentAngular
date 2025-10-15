@@ -1,0 +1,48 @@
+<div class="batch-register-container">
+  <h2>Batch Register Users</h2>
+  <form (ngSubmit)="registerBatch()">
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Flat No</th>
+          <th>Password</th>
+          <th>Active</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users; let i = index">
+          <td><input [(ngModel)]="user.username" name="username{{i}}" required /></td>
+          <td><input [(ngModel)]="user.name" name="name{{i}}" required /></td>
+          <td>
+            <select [(ngModel)]="user.role" name="role{{i}}" required>
+              <option value="">Select role</option>
+              <option value="OWNER">OWNER</option>
+              <option value="TENANT">TENANT</option>
+              <option value="SECURITY_GUARD">SECURITY_GUARD</option>
+              <option value="PRESIDENT">PRESIDENT</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </td>
+          <td><input [(ngModel)]="user.flatNo" name="flatNo{{i}}" required /></td>
+          <td><input [(ngModel)]="user.password" name="password{{i}}" required type="password" /></td>
+          <td>
+            <input type="checkbox" [(ngModel)]="user.active" name="active{{i}}" [checked]="true" />
+          </td>
+          <td>
+            <button type="button" (click)="removeUserRow(i)" class="remove-btn" title="Remove">✕</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="actions">
+      <button type="button" (click)="addUserRow()">Add Row</button>
+      <button type="submit" [disabled]="loading">Register Batch</button>
+    </div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="success" class="success">{{ success }}</div>
+  </form>
+</div>
